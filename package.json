@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:all": "concurrently \"pnpm dev:webhook\" \"pnpm run dev\" ",
+    "dev:webhook": "ngrok http --domain=crow-enough-jaguar.ngrok-free.app 3000",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -17,12 +19,14 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.39.3",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "svix": "^1.59.2",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"
   },
