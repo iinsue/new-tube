@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { trpc } from "@/trpc/client";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { ResponsiveModal } from "@/components/responsive-modal";
@@ -14,11 +15,13 @@ export const ThumbnailUploadModal = ({
   onOpenChange,
 }: ThumbnailUploadModalProps) => {
   const utils = trpc.useUtils();
+  const [isPending, setIsPending] = useState(false);
 
   const onUploadComplete = () => {
     utils.studio.getMany.invalidate();
     utils.studio.getOne.invalidate({ id: videoId });
     onOpenChange(false);
+    setIsPending(false);
   };
 
   return (
@@ -31,6 +34,8 @@ export const ThumbnailUploadModal = ({
         endpoint="thumbnailUploader"
         input={{ videoId }}
         onClientUploadComplete={onUploadComplete}
+        onUploadBegin={() => setIsPending(true)}
+        disabled={isPending}
       />
     </ResponsiveModal>
   );
