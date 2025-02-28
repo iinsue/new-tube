@@ -63,6 +63,25 @@ export const videosRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id: userId } = ctx.user;
 
+      // Uploadthing에 등록된 preview와 thumbnail 제거
+      const [existingVideo] = await db
+        .select()
+        .from(videos)
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+      if (!existingVideo) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const utapi = new UTApi();
+      if (existingVideo.thumbnailKey) {
+        await utapi.deleteFiles(existingVideo.thumbnailKey);
+      }
+      if (existingVideo.previewKey) {
+        await utapi.deleteFiles(existingVideo.previewKey);
+      }
+
+      // DB에서 영상 제거거
       const [removeVideo] = await db
         .delete(videos)
         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
