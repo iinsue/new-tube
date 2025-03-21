@@ -90,7 +90,7 @@ export const videoSelectSchema = createSelectSchema(videos);
  application level 에서 동작,
  따라서 select with joins를 사용할 경우 해당 코드가 필요없을 수 있음.
  */
-export const videoRelations = relations(videos, ({ one }) => ({
+export const videoRelations = relations(videos, ({ one, many }) => ({
   user: one(users, {
     fields: [videos.userId],
     references: [users.id],
@@ -99,6 +99,7 @@ export const videoRelations = relations(videos, ({ one }) => ({
     fields: [videos.categoryId],
     references: [categories.id],
   }),
+  views: many(videoViews),
 }));
 
 export const videoViews = pgTable(
@@ -107,7 +108,7 @@ export const videoViews = pgTable(
     userId: uuid("user_id")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
-    videoId: uuid("user_id")
+    videoId: uuid("video_id")
       .references(() => videos.id, { onDelete: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -122,11 +123,11 @@ export const videoViews = pgTable(
 );
 
 export const videoViewRelations = relations(videoViews, ({ one }) => ({
-  users: one(users, {
+  user: one(users, {
     fields: [videoViews.userId],
     references: [users.id],
   }),
-  videos: one(videos, {
+  video: one(videos, {
     fields: [videoViews.videoId],
     references: [videos.id],
   }),
