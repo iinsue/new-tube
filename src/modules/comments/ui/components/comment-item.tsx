@@ -47,6 +47,34 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
     },
   });
 
+  const like = trpc.commentReactions.like.useMutation({
+    onSuccess: () => {
+      utils.comments.getMany.invalidate({ videoId: comment.videoId });
+    },
+
+    onError: (error) => {
+      toast.error("Something went wrong", { id: "reaction" });
+
+      if (error.data?.code === "UNAUTHORIZED") {
+        clerk.openSignIn();
+      }
+    },
+  });
+
+  const dislike = trpc.commentReactions.dislike.useMutation({
+    onSuccess: () => {
+      utils.comments.getMany.invalidate({ videoId: comment.videoId });
+    },
+
+    onError: (error) => {
+      toast.error("Something went wrong", { id: "reaction" });
+
+      if (error.data?.code === "UNAUTHORIZED") {
+        clerk.openSignIn();
+      }
+    },
+  });
+
   return (
     <div>
       <div className="flex gap-4">
@@ -75,23 +103,35 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
                 variant="ghost"
                 size="icon"
                 className="size-8"
-                onClick={() => {}}
-                disabled={false}
+                onClick={() => like.mutate({ commentId: comment.id })}
+                disabled={like.isPending}
               >
-                <ThumbsUpIcon className={cn()} />
+                <ThumbsUpIcon
+                  className={cn(
+                    comment.viewerReaction === "like" && "fill-black",
+                  )}
+                />
               </Button>
-              <span className="text-xs text-muted-foreground">0</span>
+              <span className="text-xs text-muted-foreground">
+                {comment.likeCount}
+              </span>
 
               <Button
                 variant="ghost"
                 size="icon"
                 className="size-8"
-                onClick={() => {}}
-                disabled={false}
+                onClick={() => dislike.mutate({ commentId: comment.id })}
+                disabled={dislike.isPending}
               >
-                <ThumbsDownIcon className={cn()} />
+                <ThumbsDownIcon
+                  className={cn(
+                    comment.viewerReaction === "dislike" && "fill-black",
+                  )}
+                />
               </Button>
-              <span className="text-xs text-muted-foreground">0</span>
+              <span className="text-xs text-muted-foreground">
+                {comment.dislikeCount}
+              </span>
             </div>
           </div>
         </div>
