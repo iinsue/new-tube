@@ -43,6 +43,7 @@ export const userRelations = relations(users, ({ many }) => ({
     relationName: "subscriptions_creator_id_fkey",
   }),
   comments: many(comments),
+  commentReactions: many(commentReactions),
 }));
 
 export const subscriptions = pgTable(
@@ -167,7 +168,7 @@ export const comments = pgTable("comments", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const commentRelations = relations(comments, ({ one }) => ({
+export const commentRelations = relations(comments, ({ one, many }) => ({
   user: one(users, {
     fields: [comments.userId],
     references: [users.id],
@@ -177,6 +178,8 @@ export const commentRelations = relations(comments, ({ one }) => ({
     fields: [comments.videoId],
     references: [videos.id],
   }),
+
+  reactions: many(commentReactions),
 }));
 
 export const commentInsertSchema = createInsertSchema(comments);
@@ -202,6 +205,20 @@ export const commentReactions = pgTable(
       columns: [table.userId, table.commentId],
     }),
   ],
+);
+
+export const commentReactionRelations = relations(
+  commentReactions,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [commentReactions.userId],
+      references: [users.id],
+    }),
+    comment: one(comments, {
+      fields: [commentReactions.commentId],
+      references: [comments.id],
+    }),
+  }),
 );
 
 export const videoViews = pgTable(
