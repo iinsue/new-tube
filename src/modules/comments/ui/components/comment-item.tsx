@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
+import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/client";
 import { useAuth, useClerk } from "@clerk/nextjs";
 
@@ -13,10 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { MessageSquareIcon, MoreVerticalIcon, Trash2Icon } from "lucide-react";
+import {
+  Trash2Icon,
+  ThumbsUpIcon,
+  ThumbsDownIcon,
+  MoreVerticalIcon,
+  MessageSquareIcon,
+} from "lucide-react";
 
 import { CommentsGetManyOutput } from "../../types";
-import { toast } from "sonner";
 
 interface CommentItemProps {
   comment: CommentsGetManyOutput["items"][number];
@@ -62,7 +69,31 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
             </div>
           </Link>
           <p className="text-sm">{comment.value}</p>
-          {/* TODO: Reactions */}
+          <div className="mt-1 flex items-center gap-2">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                onClick={() => {}}
+                disabled={false}
+              >
+                <ThumbsUpIcon className={cn()} />
+              </Button>
+              <span className="text-xs text-muted-foreground">0</span>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                onClick={() => {}}
+                disabled={false}
+              >
+                <ThumbsDownIcon className={cn()} />
+              </Button>
+              <span className="text-xs text-muted-foreground">0</span>
+            </div>
+          </div>
         </div>
 
         <DropdownMenu modal={false}>
