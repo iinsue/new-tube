@@ -46,6 +46,9 @@ export const CommentItem = ({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isRepliesOpen, setIsRepliesOpen] = useState(false);
 
+  const isOptionsActive =
+    variant === "comment" || comment.user.clerkId === userId;
+
   const utils = trpc.useUtils();
   const onRemove = trpc.comments.remove.useMutation({
     onSuccess: () => {
@@ -93,22 +96,22 @@ export const CommentItem = ({
       <div className="flex gap-4">
         <Link href={`/users/${comment.userId}`}>
           <UserAvatar
-            size="lg"
+            size={variant === "comment" ? "lg" : "sm"}
             imageUrl={comment.user.imageUrl}
             name={comment.user.name}
           />
         </Link>
         <div className="min-w-0 flex-1">
-          <Link href={`/users/${comment.userId}`}>
-            <div className="mb-0.5 flex items-center gap-2">
+          <div className="mb-0.5 flex items-center gap-2">
+            <Link href={`/users/${comment.userId}`}>
               <span className="pb-0.5 text-sm font-medium">
                 {comment.user.name}
               </span>
-              <span className="text-xs text-muted-foreground">
-                {formatDistanceToNow(comment.createdAt, { addSuffix: true })}
-              </span>
-            </div>
-          </Link>
+            </Link>
+            <span className="text-xs text-muted-foreground">
+              {formatDistanceToNow(comment.createdAt, { addSuffix: true })}
+            </span>
+          </div>
           <p className="text-sm">{comment.value}</p>
           <div className="mt-1 flex items-center gap-2">
             <div className="flex items-center">
@@ -158,32 +161,33 @@ export const CommentItem = ({
             )}
           </div>
         </div>
+        {isOptionsActive && (
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8">
+                <MoreVerticalIcon />
+              </Button>
+            </DropdownMenuTrigger>
 
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8">
-              <MoreVerticalIcon />
-            </Button>
-          </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {variant === "comment" && (
+                <DropdownMenuItem onClick={() => setIsReplyOpen(true)}>
+                  <MessageSquareIcon className="size-4" />
+                  Reply
+                </DropdownMenuItem>
+              )}
 
-          <DropdownMenuContent align="end">
-            {variant === "comment" && (
-              <DropdownMenuItem onClick={() => setIsReplyOpen(true)}>
-                <MessageSquareIcon className="size-4" />
-                Reply
-              </DropdownMenuItem>
-            )}
-
-            {comment.user.clerkId === userId && (
-              <DropdownMenuItem
-                onClick={() => onRemove.mutate({ id: comment.id })}
-              >
-                <Trash2Icon className="size-4" />
-                Delete
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {comment.user.clerkId === userId && (
+                <DropdownMenuItem
+                  onClick={() => onRemove.mutate({ id: comment.id })}
+                >
+                  <Trash2Icon className="size-4" />
+                  Delete
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
       {isReplyOpen && variant === "comment" && (
         <div className="mt-4 pl-14">
