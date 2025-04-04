@@ -13,6 +13,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { makeQueryClient } from "./query-client";
 import type { AppRouter } from "./routers/_app";
 
+import { APP_URL } from "@/constants";
+
 export const trpc = createTRPCReact<AppRouter>();
 let clientQueryClientSingleton: QueryClient;
 function getQueryClient() {
@@ -27,7 +29,7 @@ function getUrl() {
   const base = (() => {
     if (typeof window !== "undefined") return "";
     // TODO: Modify for outside-Vercel deployment
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+    if (APP_URL) return `https://${APP_URL}`;
     return "http://localhost:3000";
   })();
   return `${base}/api/trpc`;
