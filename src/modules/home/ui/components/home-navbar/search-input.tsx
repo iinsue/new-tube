@@ -15,10 +15,7 @@ export const SearchInput = () => {
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const url = new URL(
-      "/search",
-      APP_URL ? `https://${APP_URL}` : "http://localhost:3000",
-    );
+    const url = new URL("/search", APP_URL);
     const newQuery = value.trim();
 
     url.searchParams.set("query", encodeURIComponent(newQuery));
