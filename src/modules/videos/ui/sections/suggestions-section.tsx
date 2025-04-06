@@ -43,7 +43,7 @@ const SuggestionsSectionSkeleton = () => {
       </div>
       <div className="space-y-10 max-md:block md:hidden">
         {Array.from({ length: 6 }).map((_, index) => (
-          <VideoGridCardSkeleton />
+          <VideoGridCardSkeleton key={index} />
         ))}
       </div>
     </>
