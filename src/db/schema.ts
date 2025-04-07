@@ -19,6 +19,37 @@ import {
 
 export const reactionType = pgEnum("reaction_type", ["like", "dislike"]);
 
+export const playlistVideos = pgTable(
+  "playlist_videos",
+  {
+    playlistId: uuid("playlist_id")
+      .references(() => playlists.id, { onDelete: "cascade" })
+      .notNull(),
+    videoId: uuid("video_id")
+      .references(() => videos.id, { onDelete: "cascade" })
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({
+      name: "playlist_videos_pk",
+      columns: [table.playlistId, table.videoId],
+    }),
+  ],
+);
+
+export const playlists = pgTable("playlists", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const users = pgTable(
   "users",
   {
