@@ -3,9 +3,36 @@ import { and, desc, eq, getTableColumns, lt, or } from "drizzle-orm";
 
 import { db } from "@/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { users, videoReactions, videos, videoViews } from "@/db/schema";
+import {
+  playlists,
+  users,
+  videoReactions,
+  videos,
+  videoViews,
+} from "@/db/schema";
+import { TRPCError } from "@trpc/server";
 
 export const playlistRouter = createTRPCRouter({
+  create: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const { name } = input;
+      const { id: userId } = ctx.user;
+
+      const [craetedPlaylist] = await db
+        .insert(playlists)
+        .values({
+          userId,
+          name,
+        })
+        .returning();
+
+      if (!craetedPlaylist) {
+        throw new TRPCError({ code: "BAD_REQUEST" });
+      }
+
+      return craetedPlaylist;
+    }),
   getLiked: protectedProcedure
     .input(
       z.object({
