@@ -4,9 +4,6 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-// TODO: Confirm this is needed or not
-export const dynamic = "force-dynamic";
-
 const Layout = ({ children }: LayoutProps) => {
   return <HomeLayout>{children}</HomeLayout>;
 };

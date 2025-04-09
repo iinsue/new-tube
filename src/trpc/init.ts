@@ -1,7 +1,5 @@
 import { cache } from "react";
 import superjson from "superjson";
-import { Redis } from "@upstash/redis";
-import { Ratelimit } from "@upstash/ratelimit";
 
 import { auth } from "@clerk/nextjs/server";
 
