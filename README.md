@@ -6,8 +6,15 @@
 - trpc
 - PostgreSQL
 
-영상 업로드 - MUX
-Serverless Data Platform - Upstash
-로그인 - Clerk
-DB - Neon
-image upload - Uploadthing
+</br>
+
+--- 
+### 기능구현에 사용한 서비스
+
+- 영상 업로드 - MUX
+- Serverless Data Platform - Upstash
+- 로그인 - Clerk
+- DB - Neon
+- image upload - Uploadthing
+
+---
